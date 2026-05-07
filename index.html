@@ -20,33 +20,30 @@
             overflow-x: hidden;
         }
 
-        /* Matrix Arka Plan */
+        /* Matrix Arka Plan (Önceki görselden miras) */
         #matrix {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: -1;
-            opacity: 0.15;
+            position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15;
         }
 
-        .container { padding: 30px; position: relative; max-width: 1200px; margin: 0 auto; }
+        .container { padding: 30px; position: relative; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; }
 
         .header {
-            border-left: 5px solid var(--primary-red);
-            padding-left: 20px;
-            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-red); padding-left: 20px; margin-bottom: 30px;
         }
-
         h1 { color: var(--primary-red); letter-spacing: 5px; text-transform: uppercase; margin: 0; font-size: 2.5em; }
 
+        /* Canlı Navigasyon Linkleri (Düzeltildi) */
         .nav { margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
         .nav a {
             color: var(--text-color); text-decoration: none; border: 1px solid var(--dark-red);
             padding: 8px 15px; background: rgba(139, 0, 0, 0.1); transition: 0.3s;
             font-size: 0.9em;
         }
-        .nav a:hover { background: var(--primary-red); color: #000; box-shadow: 0 0 15px var(--primary-red); }
+        .nav a:hover {
+            background: var(--primary-red); color: #000; box-shadow: 0 0 15px var(--primary-red);
+        }
 
-        /* Terminal Alanı */
+        /* Terminal (Kullanıcı Adı Düzenlendi) */
         .terminal-box {
             background: rgba(5, 5, 5, 0.9);
             border: 1px solid var(--dark-red);
@@ -57,30 +54,32 @@
             font-size: 0.95em;
         }
 
-        /* Ana Dashboard Yapısı */
         .dashboard {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 20px;
         }
-
         .panel {
-            border: 1px solid var(--dark-red);
-            background: rgba(10, 10, 10, 0.85);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--dark-red); background: rgba(10, 10, 10, 0.85);
+            position: relative; overflow: hidden;
         }
-
         .panel-header {
-            background: var(--dark-red);
-            color: white;
-            padding: 5px 10px;
-            font-size: 0.7em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            background: var(--dark-red); color: white; padding: 5px 10px;
+            font-size: 0.7em; letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* Metrik Barları */
+        /* GÜNCELLENMİŞ: Dalga Paneli (Daha Küçük) */
+        #data-pulse-panel {
+            height: 200px; /* EKG'den daha küçük yükseklik */
+            display: flex; flex-direction: column;
+            background: #000; /* HATA 2: Saf Siyah Arka Plan */
+        }
+        
+        /* GÜNCELLENMİŞ: GIF Konteyneri */
+        .wave-gif-container {
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0.9; /* Hafif transparanlık, elit dokunuş */
+        }
+
         .metric-label { font-size: 0.8em; margin-top: 10px; display: block; }
         .metric-bar { height: 8px; background: #222; margin: 5px 0 15px 0; border-radius: 2px; }
         .metric-fill {
@@ -91,7 +90,6 @@
         .cursor { display: inline-block; width: 8px; height: 17px; background: var(--primary-red); animation: blink 1s infinite; vertical-align: middle; }
         @keyframes blink { 0%, 100% {opacity:0} 50% {opacity:1} }
 
-        /* Alt Haber Bandı */
         .ticker {
             position: fixed; bottom: 0; width: 100%; background: #900; 
             color: #fff; padding: 7px 0; font-size: 0.8em; overflow: hidden; z-index: 100;
@@ -99,9 +97,7 @@
         .ticker-wrap { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; }
         @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        @media (max-width: 768px) {
-            .dashboard { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -115,45 +111,38 @@
         </div>
 
         <div class="nav">
-            <a href="#">PROJECTS</a>
-            <a href="#">ANOM-CHAT</a>
-            <a href="#">LOGS</a>
-            <a href="#">CTF</a>
-            <a href="#">STORE</a>
-            <a href="#">PAYBIN</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="chat.html">ANOM-CHAT</a>
+            <a href="logs.html">LOGS</a>
+            <a href="ctf.html">CTF</a>
+            <a href="store.html">STORE</a>
+            <a href="paybin.html">PAYBIN</a>
         </div>
 
         <div class="terminal-box">
-            <span style="color: var(--primary-red)">[recai@kali]:~#</span> <span id="typewriter"></span><span class="cursor"></span>
+            <span style="color: var(--primary-red)">[operator@anom]:~#</span> <span id="typewriter"></span><span class="cursor"></span>
         </div>
 
         <div class="dashboard">
-            <div class="panel" style="height: 350px;">
-                <div class="panel-header">LIVE_SIGNAL_ANALYSIS // SIGINT_MODULE</div>
-                <canvas id="spectrogramCanvas"></canvas>
-                <div style="position: absolute; top: 45px; right: 20px; color: var(--primary-red); font-size: 0.65em; text-align: right; pointer-events: none; line-height: 1.5;">
-                    <span style="color: white;">SOURCE:</span> UNKNOWN_UPLINK <br>
-                    <span style="color: white;">DECODING:</span> AES-XTS <br>
-                    <span style="color: white;">BITRATE:</span> 12.4 Gbps
+            <div id="data-pulse-panel" class="panel">
+                <div class="panel-header">LIVE_DATA_STREAM // MULTI_PULSE_FEED</div>
+                <div class="wave-gif-container">
+                    <img id="wave-gif" style="max-height: 100%; max-width: 100%; mix-blend-mode: screen;" alt="Kırmızı Veri Dalga Akışı">
                 </div>
             </div>
 
             <div class="panel" style="padding: 20px;">
                 <div class="panel-header" style="margin: -20px -20px 20px -20px;">CORE METRICS</div>
-                
                 <span class="metric-label">CPU THREADS LOAD</span>
                 <div class="metric-bar"><div class="metric-fill" id="cpu-bar"></div></div>
-                
                 <span class="metric-label">MEMORY USAGE</span>
                 <div class="metric-bar"><div class="metric-fill" id="ram-bar"></div></div>
-                
                 <span class="metric-label">NETWORK I/O</span>
                 <div class="metric-bar"><div class="metric-fill" id="net-bar"></div></div>
-
                 <div style="margin-top: 25px; font-size: 0.75em; color: #555; line-height: 1.8;">
                     <span style="color: var(--primary-red)">></span> VPN_TUNNEL: <span style="color: #0f0">SECURE</span><br>
                     <span style="color: var(--primary-red)">></span> FIREWALL: <span style="color: #0f0">ACTIVE</span><br>
-                    <span style="color: var(--primary-red)">></span> ANOM_BOTNET: STANDBY
+                    <span style="color: var(--primary-red)">></span> BOTNET: STANDBY
                 </div>
             </div>
         </div>
@@ -161,67 +150,37 @@
 
     <div class="ticker">
         <div class="ticker-wrap">
-            >>> SİSTEM DURUMU: OPERASYONEL -- TÜM MODÜLLER YÜKLENDİ -- SİNYAL ANALİZİ BAŞLATILDI -- YENİ PROJE YAYINDA: ANOM-X -- LOGLAR TEMİZLENDİ -- BAĞLANTI ŞİFRELİ...
+            >>> SİSTEM DURUMU: OPERASYONEL -- YÜKLEME TAMAMLANDI -- VERİ AKIŞI AKTİF -- YENİ PROJE YAYINDA -- LOGLAR ŞİFRELENDİ...
         </div>
     </div>
 
     <script>
-        // 1. Matrix Efekti
+        // 1. Matrix Arka Plan (Miras)
         const mCanvas = document.getElementById('matrix');
         const mCtx = mCanvas.getContext('2d');
-        function resizeMatrix() {
-            mCanvas.width = window.innerWidth;
-            mCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeMatrix);
-        resizeMatrix();
-
-        const chars = "0123456789ABCDEF@#$%&*";
-        const fontSize = 16;
-        const columns = mCanvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
+        function resizeMatrix() { mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeMatrix); resizeMatrix();
+        const chars = "0123456789ABCDEF@#$%&*"; const fontSize = 16; const drops = Array(Math.floor(mCanvas.width/fontSize)).fill(1);
         function drawMatrix() {
-            mCtx.fillStyle = "rgba(8, 8, 8, 0.08)";
-            mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-            mCtx.fillStyle = "#ff0000";
-            mCtx.font = fontSize + "px monospace";
+            mCtx.fillStyle = "rgba(8, 8, 8, 0.08)"; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mCtx.fillStyle = "#ff0000"; mCtx.font = fontSize + "px monospace";
             for (let i = 0; i < drops.length; i++) {
                 const text = chars.charAt(Math.floor(Math.random() * chars.length));
                 mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+                if (drops[i] * fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++;
             }
         }
 
-        // 2. Spectrogram Efekti
-        const sCanvas = document.getElementById('spectrogramCanvas');
-        const sCtx = sCanvas.getContext('2d');
-        let sW, sH;
+        // GÜNCELLENMİŞ: GIF Yükleme ve Ayarları
+        const waveGif = document.getElementById('wave-gif');
+        
+        // Buraya o fütüristik dalga formunun kırmızı/siyah GIF'inin linkini koy.
+        // Şimdilik yer tutucu olarak siber bir dalga formunun linkini veriyorum.
+        // Eğer kendi oluşturduğun bir GIF varsa linkini değiştirebilirsin.
+        waveGif.src = 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjkxdXlhcmgxMzZ4OWE2M24zOTZod3pyNXE0YWV4ZXJ4dWN4ZXJ4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPm0OdxF4a6i23K/giphy.gif'; 
 
-        function resizeSpec() {
-            const parent = sCanvas.parentElement;
-            sW = sCanvas.width = parent.offsetWidth;
-            sH = sCanvas.height = parent.offsetHeight;
-        }
-        window.addEventListener('resize', resizeSpec);
-        resizeSpec();
-
-        function drawSpectrogram() {
-            const imgData = sCtx.getImageData(0, 2, sW, sH - 2);
-            sCtx.putImageData(imgData, 0, 0);
-            const y = sH - 2;
-            for (let x = 0; x < sW; x += 3) {
-                let intensity = Math.sin(x * 0.03 + Date.now() * 0.005) * 50 + 100;
-                intensity += Math.random() * 60;
-                sCtx.fillStyle = `rgb(${intensity}, 0, 0)`;
-                sCtx.fillRect(x, y, 3, 2);
-            }
-            requestAnimationFrame(drawSpectrogram);
-        }
-
-        // 3. Terminal Yazı Efekti
-        const termText = "./initialize_lab.py\n> Mounting core systems... [OK]\n> Encrypting terminal session... [OK]\n> ANOM-X Laboratory is now ONLINE.\n> Welcome, Recai.";
+        // Terminal Yazı Efekti (Genel Karşılama, Miras)
+        const termText = "./initialize_lab.py\n> Mounting core systems... [OK]\n> Encrypting terminal session... [OK]\n> Welcome to ANOMcompany Laboratory.\n> ACCESS: OPERATOR.";
         let idx = 0;
         function typeWriter() {
             if (idx < termText.length) {
@@ -229,11 +188,10 @@
                 idx++;
                 setTimeout(typeWriter, 40);
             } else {
-                // Metrik barlarını doldur
                 setTimeout(() => {
-                    document.getElementById('cpu-bar').style.width = "68%";
-                    document.getElementById('ram-bar').style.width = "42%";
-                    document.getElementById('net-bar').style.width = "91%";
+                    document.getElementById('cpu-bar').style.width = "71%";
+                    document.getElementById('ram-bar').style.width = "54%";
+                    document.getElementById('net-bar').style.width = "88%";
                 }, 500);
             }
         }
@@ -241,7 +199,6 @@
         // Başlat
         window.onload = () => {
             setInterval(drawMatrix, 50);
-            drawSpectrogram();
             setTimeout(typeWriter, 800);
         };
     </script>
