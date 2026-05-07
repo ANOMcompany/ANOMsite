@@ -83,26 +83,6 @@
         .cursor { display: inline-block; width: 8px; height: 17px; background: var(--primary-red); animation: blink 1s infinite; vertical-align: middle; }
         @keyframes blink { 0%, 100% {opacity:0} 50% {opacity:1} }
 
-        /* Yeni Araç Stilleri */
-        .cipher-tool {
-            margin-top: 30px; padding: 20px; border: 1px solid var(--primary-red); background: rgba(5,5,5,0.8);
-        }
-        .cipher-textarea {
-            width: 100%; height: 80px; background: #000; color: #0f0; border: 1px solid var(--dark-red);
-            padding: 10px; font-family: monospace; outline: none; box-sizing: border-box; margin-top: 10px;
-        }
-        .btn-group { margin-top: 15px; display: flex; gap: 10px; }
-        .btn-group button {
-            flex: 1; background: var(--dark-red); color: white; border: 1px solid var(--primary-red);
-            padding: 10px; cursor: pointer; font-family: monospace; transition: 0.3s;
-        }
-        .btn-group button:hover { background: var(--primary-red); color: #000; }
-        #anomResult {
-            margin-top: 20px; padding: 15px; background: rgba(255,0,0,0.05);
-            border-left: 3px solid var(--primary-red); min-height: 30px; font-size: 0.9em;
-            word-break: break-all; color: #0f0;
-        }
-
         .ticker {
             position: fixed; bottom: 0; width: 100%; background: #900;
             color: #fff; padding: 7px 0; font-size: 0.8em; overflow: hidden; z-index: 100;
@@ -124,12 +104,12 @@
         </div>
 
         <div class="nav">
-            <a href="#">PROJECTS</a>
-            <a href="#">ANOM-CHAT</a>
-            <a href="#">LOGS</a>
-            <a href="#">CTF</a>
-            <a href="#">STORE</a>
-            <a href="#">PAYBIN</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="chat.html">ANOM-CHAT</a>
+            <a href="logs.html">LOGS</a>
+            <a href="ctf.html">CTF</a>
+            <a href="store.html">STORE</a>
+            <a href="paybin.html">PAYBIN</a>
         </div>
 
         <div class="terminal-box">
@@ -157,30 +137,15 @@
                 </div>
             </div>
         </div>
-
-        <div class="cipher-tool">
-            <div class="panel-header" style="margin: -20px -20px 20px -20px;">[ TOOL_RELEASE_V1.0 // CIPHER_ENGINE ]</div>
-            <p style="font-size: 0.8em; color: var(--primary-red); margin-bottom: 5px;">> ENTER DATA TO PROCESS:</p>
-            <textarea id="anomInput" class="cipher-textarea" placeholder="Şifrelenecek mesajı buraya yazın..."></textarea>
-            <div class="btn-group">
-                <button onclick="anomAction('encode')">ENCODE (B64)</button>
-                <button onclick="anomAction('decode')">DECODE (B64)</button>
-                <button onclick="anomAction('clear')" style="flex: 0.2;">X</button>
-            </div>
-            <div id="anomResult">
-                <span style="color: #555;">[ WAITING_FOR_OPERATOR_INPUT ]</span>
-            </div>
-        </div>
     </div>
 
     <div class="ticker">
         <div class="ticker-wrap">
-            >>> SİSTEM DURUMU: OPERASYONEL -- YÜKLEME TAMAMLANDI -- SİNYAL ANALİZİ AKTİF -- ANOM_CIPHER_V1.0 YAYINDA -- GHOST OPERASYONU BAŞLADI...
+            >>> SİSTEM DURUMU: OPERASYONEL -- YÜKLEME TAMAMLANDI -- SİNYAL ANALİZİ AKTİF -- PROJELER GÜNCELLENDİ...
         </div>
     </div>
 
     <script>
-        // Matrix Arka Plan
         const mCanvas = document.getElementById('matrix');
         const mCtx = mCanvas.getContext('2d');
         function resizeMatrix() { mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight; }
@@ -196,13 +161,13 @@
             }
         }
 
-        // Dalga Efekti
         const waveBox = document.getElementById('waveBox');
         const wCanvas = document.createElement('canvas');
         const wCtx = wCanvas.getContext('2d');
         waveBox.appendChild(wCanvas);
         function resizeWave() { wCanvas.width = waveBox.offsetWidth; wCanvas.height = waveBox.offsetHeight; }
         window.addEventListener('resize', resizeWave); resizeWave();
+
         let offset = 0;
         function drawWave() {
             wCtx.fillStyle = '#000'; wCtx.fillRect(0, 0, wCanvas.width, wCanvas.height);
@@ -215,7 +180,6 @@
             wCtx.stroke(); offset += 0.08; requestAnimationFrame(drawWave);
         }
 
-        // Terminal Yazı Efekti
         const termText = "./initialize_lab.py\n> Mounting core systems... [OK]\n> Encrypting terminal session... [OK]\n> Welcome to ANOMcompany Laboratory.\n> ACCESS: OPERATOR GHOST.";
         let idx = 0;
         function typeWriter() {
@@ -229,18 +193,6 @@
                     document.getElementById('net-bar').style.width = "88%";
                 }, 500);
             }
-        }
-
-        // Cipher Aracı Fonksiyonu
-        function anomAction(type) {
-            const input = document.getElementById('anomInput');
-            const result = document.getElementById('anomResult');
-            if (type === 'clear') { input.value = ''; result.innerHTML = '<span style="color: #555;">[ WAITING_FOR_OPERATOR_INPUT ]</span>'; return; }
-            if (!input.value) { result.innerHTML = '<span style="color: #f00;">[!] ERROR: EMPTY_INPUT</span>'; return; }
-            try {
-                if (type === 'encode') result.innerText = btoa(input.value);
-                else if (type === 'decode') result.innerText = atob(input.value);
-            } catch (e) { result.innerHTML = '<span style="color: #f00;">[!] ERROR: INVALID_DATA</span>'; }
         }
 
         window.onload = () => {
