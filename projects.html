@@ -38,21 +38,21 @@
             <div id="result" class="result-box">[ WAITING_FOR_DATA ]</div>
         </div>
 
-        <!-- ANOM_PSYCHO_PROFILER_V2.0 (YENİ EK) -->
+        <!-- ANOM_PSYCHO_PROFILER_V2.1 -->
         <div class="tool-card">
-            <h3 style="color: #ff0000; margin: 0;">ANOM_PSYCHO_PROFILER_V2.0</h3>
-            <p style="font-size: 0.8em; color: #666;">> Core Identity, Inner Circle & Smart Weighted Pattern Engine</p>
+            <h3 style="color: #ff0000; margin: 0;">ANOM_PSYCHO_PROFILER_V2.1</h3>
+            <p style="font-size: 0.8em; color: #666;">> Advanced Date Parsing & Terminal Stream Engine</p>
             
             <div style="font-size: 0.8em; color: #888; margin-top: 5px;">[ Sütun 1: Kimlik & Kronoloji ]</div>
             <div class="form-grid">
-                <input type="text" id="pName" placeholder="Ad (Örn: ahmet)">
-                <input type="text" id="pSurname" placeholder="Soyad (Örn: yilmaz)">
+                <input type="text" id="pName" placeholder="Ad (Örn: revai)">
+                <input type="text" id="pSurname" placeholder="Soyad (Örn: akan)">
             </div>
-            <input type="text" id="pBirth" placeholder="Doğum Yılı / Tarih (Örn: 1998)">
+            <input type="text" id="pBirth" placeholder="Doğum Tarihi (Örn: 16/12/2004 veya 2004)">
 
             <div style="font-size: 0.8em; color: #888; margin-top: 5px;">[ Sütun 2: İç Çevre & Duygusal Çapa ]</div>
             <div class="form-grid">
-                <input type="text" id="pPet" placeholder="Evcil Hayvan / Özel İsim (Örn: pamuk)">
+                <input type="text" id="pPet" placeholder="Evcil Hayvan / Özel İsim">
                 <input type="text" id="pExtra" placeholder="Şehir / Ek Suffix (Örn: 34)">
             </div>
 
@@ -77,7 +77,6 @@
     </div>
 
     <script>
-        // Cipher İşlemleri
         function anomProc(mode) {
             const input = document.getElementById('anomIn').value;
             const res = document.getElementById('result');
@@ -87,11 +86,10 @@
             } catch(e) { res.innerText = "[!] ERROR: INVALID_FORMAT"; }
         }
 
-        // Psikolojik Profiler ve Akıllı Wordlist Motoru
         async function generateSmartWordlist() {
             const name = document.getElementById('pName').value.trim().toLowerCase();
             const surname = document.getElementById('pSurname').value.trim().toLowerCase();
-            const birth = document.getElementById('pBirth').value.trim();
+            const rawBirth = document.getElementById('pBirth').value.trim();
             const pet = document.getElementById('pPet').value.trim().toLowerCase();
             const extra = document.getElementById('pExtra').value.trim().toLowerCase();
             
@@ -103,14 +101,33 @@
                 return;
             }
 
-            status.innerText = "> RUNNING_PSYCHOLOGICAL_BEHAVIOR_MATRIX...";
+            status.innerText = "> PARSING_BEHAVIORAL_PATTERNS & DATES...";
             resBox.innerHTML = "";
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 600));
+
+            // Tarih Ayrıştırma (Örn: 16/12/2004 -> yıl: 2004, gün: 16, ay: 12)
+            let birthClean = rawBirth.replace(/[\/\.\-\s]/g, ""); // Tüm ayraçları sil (16122004)
+            let birthYear = "";
+            let birthDay = "";
+            let birthMonth = "";
+
+            if (rawBirth.length >= 4) {
+                // Eğer tam tarih girildiyse son 4 hane yıldır
+                birthYear = rawBirth.slice(-4);
+                if (rawBirth.includes('/') || rawBirth.includes('.')) {
+                    let parts = rawBirth.split(/[\/\.]/);
+                    if (parts.length >= 3) {
+                        birthDay = parts[0];
+                        birthMonth = parts[1];
+                        birthYear = parts[2];
+                    }
+                }
+            }
 
             let scoredList = [];
             let cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
-            let suffixes = [birth, extra, "123", "123456", "!", "123!", "_"];
             let coreEntities = [name, surname, pet].filter(Boolean);
+            let separators = ["", "_", "-", "."];
 
             coreEntities.forEach(entity => {
                 let entityCap = cap(entity);
@@ -118,51 +135,65 @@
                 scoredList.push({ text: entity, score: "%60" });
                 scoredList.push({ text: entityCap, score: "%65" });
 
-                if (birth) {
-                    scoredList.push({ text: entity + birth, score: "%95 (Çok Yüksek)" });
-                    scoredList.push({ text: entityCap + birth, score: "%92 (Çok Yüksek)" });
-                    scoredList.push({ text: birth + entity, score: "%80" });
+                // Yıl ve tarih bazlı akıllı kombinasyonlar
+                if (birthYear) {
+                    separators.forEach(sep => {
+                        scoredList.push({ text: `${entity}${sep}${birthYear}`, score: "%95 (Çok Yüksek)" });
+                        scoredList.push({ text: `${entityCap}${sep}${birthYear}`, score: "%92 (Çok Yüksek)" });
+                    });
+                }
+
+                if (birthDay && birthMonth) {
+                    scoredList.push({ text: `${entity}${birthDay}${birthMonth}`, score: "%88" });
+                    scoredList.push({ text: `${entity}${birthDay}.${birthMonth}`, score: "%86" });
                 }
 
                 if (extra) {
-                    scoredList.push({ text: entity + extra, score: "%75" });
-                    scoredList.push({ text: entityCap + extra, score: "%78" });
+                    separators.forEach(sep => {
+                        scoredList.push({ text: `${entity}${sep}${extra}`, score: "%75" });
+                    });
                 }
 
-                suffixes.forEach(suf => {
-                    if (suf && suf !== birth && suf !== extra) {
-                        scoredList.push({ text: entity + suf, score: "%70" });
-                        scoredList.push({ text: entityCap + suf, score: "%72" });
-                    }
+                ["123", "123456", "!", "123!"].forEach(suf => {
+                    scoredList.push({ text: `${entity}${suf}`, score: "%70" });
+                    scoredList.push({ text: `${entityCap}${suf}`, score: "%72" });
                 });
             });
 
             if (name && surname) {
-                scoredList.push({ text: name + surname, score: "%85" });
-                scoredList.push({ text: cap(name) + cap(surname), score: "%88" });
-                if (birth) {
-                    scoredList.push({ text: name + surname + birth, score: "%98 (Kritik Eşleşme)" });
-                    scoredList.push({ text: name + "." + surname + birth, score: "%90" });
-                }
+                separators.forEach(sep => {
+                    scoredList.push({ text: `${name}${sep}${surname}`, score: "%85" });
+                    scoredList.push({ text: `${cap(name)}${sep}${cap(surname)}`, score: "%88" });
+                    
+                    if (birthYear) {
+                        scoredList.push({ text: `${name}${sep}${surname}${sep}${birthYear}`, score: "%98 (Kritik Eşleşme)" });
+                    }
+                });
             }
 
             if (name && pet) {
-                scoredList.push({ text: name + pet, score: "%82" });
-                if (birth) {
-                    scoredList.push({ text: name + pet + birth, score: "%89" });
+                scoredList.push({ text: `${name}${pet}`, score: "%82" });
+                if (birthYear) {
+                    scoredList.push({ text: `${name}${pet}${birthYear}`, score: "%89" });
                 }
             }
 
-            status.innerText = `> ANALYSIS_COMPLETE. TOTAL_WEIGHTED_PATTERNS: ${scoredList.length}`;
-            
-            scoredList.forEach(item => {
+            status.innerText = `> ANALYSIS_IN_PROGRESS... TOTAL: ${scoredList.length}`;
+
+            // Terminal Hissi İçin Satır Satır Akış Animasyonu
+            for (let i = 0; i < scoredList.length; i++) {
+                let item = scoredList[i];
                 let div = document.createElement('div');
                 div.innerHTML = `<span class="high-prob">[${item.score}]</span> --> ${item.text}`;
                 resBox.appendChild(div);
-            });
+                resBox.scrollTop = resBox.scrollHeight;
+                // Akış hızı gecikmesi
+                await new Promise(r => setTimeout(r, 40));
+            }
+
+            status.innerText = `> ANALYSIS_COMPLETE. TOTAL_WEIGHTED_PATTERNS: ${scoredList.length}`;
         }
 
-        // Admin Finder İşlemleri
         const adminPaths = ['admin/', 'administrator/', 'login.php', 'wp-login.php', 'panel/', 'cpanel/', 'manage/', 'cp/'];
 
         async function startAdminScan() {
