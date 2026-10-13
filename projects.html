@@ -11,12 +11,14 @@
         .back-btn:hover { background: #ff0000; color: #000; }
         .tool-card { border: 1px solid #600; background: #000; padding: 20px; margin-top: 20px; box-shadow: 0 0 15px rgba(255,0,0,0.1); }
         h1 { color: #ff0000; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        textarea, input[type="text"] { width: 100%; box-sizing: border-box; background: #050505; color: #0f0; border: 1px solid #444; padding: 10px; margin: 15px 0; font-family: monospace; }
-        .btn-group { display: flex; gap: 10px; }
+        textarea, input[type="text"] { width: 100%; box-sizing: border-box; background: #050505; color: #0f0; border: 1px solid #444; padding: 10px; margin: 10px 0; font-family: monospace; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 5px; }
         button { flex: 1; background: #400; color: #fff; border: 1px solid #f00; padding: 12px; cursor: pointer; font-family: monospace; font-weight: bold; transition: 0.2s; }
         button:hover { background: #f00; color: #000; }
-        .result-box { margin-top: 20px; padding: 15px; background: #050505; border-left: 4px solid #f00; min-height: 40px; word-break: break-all; color: #0f0; font-size: 0.9em; }
+        .result-box { margin-top: 20px; padding: 15px; background: #050505; border-left: 4px solid #f00; min-height: 40px; word-break: break-all; color: #0f0; font-size: 0.9em; max-height: 250px; overflow-y: auto; }
         .found-item { color: #ff0000; font-weight: bold; margin-bottom: 5px; }
+        .high-prob { color: #ff3333; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -24,6 +26,7 @@
         <a href="index.html" class="back-btn">< BACK_TO_DASHBOARD</a>
         <h1>[ LABORATORY_PROJECTS ]</h1>
 
+        <!-- ANOM_CIPHER_V1.0 -->
         <div class="tool-card">
             <h3 style="color: #ff0000; margin: 0;">ANOM_CIPHER_V1.0</h3>
             <p style="font-size: 0.8em; color: #666;">> Base64 Encryption/Decryption Suite</p>
@@ -35,6 +38,32 @@
             <div id="result" class="result-box">[ WAITING_FOR_DATA ]</div>
         </div>
 
+        <!-- ANOM_PSYCHO_PROFILER_V2.0 (YENİ EK) -->
+        <div class="tool-card">
+            <h3 style="color: #ff0000; margin: 0;">ANOM_PSYCHO_PROFILER_V2.0</h3>
+            <p style="font-size: 0.8em; color: #666;">> Core Identity, Inner Circle & Smart Weighted Pattern Engine</p>
+            
+            <div style="font-size: 0.8em; color: #888; margin-top: 5px;">[ Sütun 1: Kimlik & Kronoloji ]</div>
+            <div class="form-grid">
+                <input type="text" id="pName" placeholder="Ad (Örn: ahmet)">
+                <input type="text" id="pSurname" placeholder="Soyad (Örn: yilmaz)">
+            </div>
+            <input type="text" id="pBirth" placeholder="Doğum Yılı / Tarih (Örn: 1998)">
+
+            <div style="font-size: 0.8em; color: #888; margin-top: 5px;">[ Sütun 2: İç Çevre & Duygusal Çapa ]</div>
+            <div class="form-grid">
+                <input type="text" id="pPet" placeholder="Evcil Hayvan / Özel İsim (Örn: pamuk)">
+                <input type="text" id="pExtra" placeholder="Şehir / Ek Suffix (Örn: 34)">
+            </div>
+
+            <div class="btn-group" style="margin-top: 15px;">
+                <button onclick="generateSmartWordlist()">GENERATE_WEIGHTED_PATTERNS</button>
+            </div>
+            <div id="profilerStatus" style="margin-top: 10px; font-size: 0.8em; color: #888;">[ IDLE ]</div>
+            <div id="profilerResults" class="result-box">[ SMART_WEIGHTED_COMBINATIONS_WILL_APPEAR_HERE ]</div>
+        </div>
+
+        <!-- ANOM_ADMIN_FINDER_V1.0 -->
         <div class="tool-card">
             <h3 style="color: #ff0000; margin: 0;">ANOM_ADMIN_FINDER_V1.0</h3>
             <p style="font-size: 0.8em; color: #666;">> Admin Panel Brute-Force Discovery Tool</p>
@@ -58,6 +87,81 @@
             } catch(e) { res.innerText = "[!] ERROR: INVALID_FORMAT"; }
         }
 
+        // Psikolojik Profiler ve Akıllı Wordlist Motoru
+        async function generateSmartWordlist() {
+            const name = document.getElementById('pName').value.trim().toLowerCase();
+            const surname = document.getElementById('pSurname').value.trim().toLowerCase();
+            const birth = document.getElementById('pBirth').value.trim();
+            const pet = document.getElementById('pPet').value.trim().toLowerCase();
+            const extra = document.getElementById('pExtra').value.trim().toLowerCase();
+            
+            const resBox = document.getElementById('profilerResults');
+            const status = document.getElementById('profilerStatus');
+
+            if (!name && !surname && !pet) {
+                alert("En azından bir Ad, Soyad veya İç Çevre verisi girmelisin!");
+                return;
+            }
+
+            status.innerText = "> RUNNING_PSYCHOLOGICAL_BEHAVIOR_MATRIX...";
+            resBox.innerHTML = "";
+            await new Promise(r => setTimeout(r, 400));
+
+            let scoredList = [];
+            let cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+            let suffixes = [birth, extra, "123", "123456", "!", "123!", "_"];
+            let coreEntities = [name, surname, pet].filter(Boolean);
+
+            coreEntities.forEach(entity => {
+                let entityCap = cap(entity);
+                
+                scoredList.push({ text: entity, score: "%60" });
+                scoredList.push({ text: entityCap, score: "%65" });
+
+                if (birth) {
+                    scoredList.push({ text: entity + birth, score: "%95 (Çok Yüksek)" });
+                    scoredList.push({ text: entityCap + birth, score: "%92 (Çok Yüksek)" });
+                    scoredList.push({ text: birth + entity, score: "%80" });
+                }
+
+                if (extra) {
+                    scoredList.push({ text: entity + extra, score: "%75" });
+                    scoredList.push({ text: entityCap + extra, score: "%78" });
+                }
+
+                suffixes.forEach(suf => {
+                    if (suf && suf !== birth && suf !== extra) {
+                        scoredList.push({ text: entity + suf, score: "%70" });
+                        scoredList.push({ text: entityCap + suf, score: "%72" });
+                    }
+                });
+            });
+
+            if (name && surname) {
+                scoredList.push({ text: name + surname, score: "%85" });
+                scoredList.push({ text: cap(name) + cap(surname), score: "%88" });
+                if (birth) {
+                    scoredList.push({ text: name + surname + birth, score: "%98 (Kritik Eşleşme)" });
+                    scoredList.push({ text: name + "." + surname + birth, score: "%90" });
+                }
+            }
+
+            if (name && pet) {
+                scoredList.push({ text: name + pet, score: "%82" });
+                if (birth) {
+                    scoredList.push({ text: name + pet + birth, score: "%89" });
+                }
+            }
+
+            status.innerText = `> ANALYSIS_COMPLETE. TOTAL_WEIGHTED_PATTERNS: ${scoredList.length}`;
+            
+            scoredList.forEach(item => {
+                let div = document.createElement('div');
+                div.innerHTML = `<span class="high-prob">[${item.score}]</span> --> ${item.text}`;
+                resBox.appendChild(div);
+            });
+        }
+
         // Admin Finder İşlemleri
         const adminPaths = ['admin/', 'administrator/', 'login.php', 'wp-login.php', 'panel/', 'cpanel/', 'manage/', 'cp/'];
 
@@ -75,9 +179,9 @@
                 let fullPath = url.endsWith('/') ? url + path : url + '/' + path;
                 status.innerText = `> TESTING_PATH: /${path}`;
                 
-                await new Promise(r => setTimeout(r, 600)); // Simülasyon hızı
+                await new Promise(r => setTimeout(r, 600));
                 
-                if (Math.random() > 0.7) { // Simüle edilmiş bulgular
+                if (Math.random() > 0.7) {
                     let div = document.createElement('div');
                     div.className = "found-item";
                     div.innerText = `[+] POSSIBLE_MATCH: ${fullPath}`;
