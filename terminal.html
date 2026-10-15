@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANOMCOMPANY // Operations Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-base: #070708;
+            --bg-panel: #0d0e12;
+            --border-red: #4a1215;
+            --accent-red: #ff3333;
+            --text-main: #c9d1d9;
+            --text-dim: #8b949e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container { max-width: 1000px; width: 100%; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-red);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-area h1 { font-size: 1.4rem; color: #fff; letter-spacing: 1px; }
+        .logo-area h1 span { color: var(--accent-red); }
+        .logo-area p { font-size: 0.75rem; color: var(--text-dim); }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-red);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .back-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+        .terminal-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-red);
+            border-radius: 4px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .terminal-screen {
+            flex: 1;
+            background: #030405;
+            border: 1px solid #210709;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #0f0;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            background: #030405;
+            border: 1px solid var(--border-red);
+            padding: 10px 15px;
+        }
+
+        .prompt-symbol {
+            color: var(--accent-red);
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo-area">
+            <h1>ANOM<span>COMPANY</span> // COMMAND SHELL</h1>
+            <p>Secure Node Interactive Terminal v3.2</p>
+        </div>
+        <a href="index.html" class="back-btn">&larr; MAIN DASHBOARD</a>
+    </header>
+
+    <div class="terminal-box">
+        <div class="terminal-screen" id="termScreen">
+ANOMCOMPANY Secure Core [Version 3.2.0-stable]
+(c) 2026 ANOM Corporation. All rights reserved.
+
+Type '<span style="color:#ff3ynth">help</span>' to view available system commands.
+root@anom-node-01:~# </div>
+        <div class="terminal-input-line">
+            <span class="prompt-symbol">root@anom-node-01:~#</span>
+            <input type="text" id="termInput" class="terminal-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+</div>
+
+<script>
+    const screen = document.getElementById('termScreen');
+    const input = document.getElementById('termInput');
+
+    const banner = screen.innerHTML;
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const cmd = input.value.trim();
+            if (!cmd) return;
+
+            screen.innerHTML += cmd + '\n';
+            processCommand(cmd);
+            input.value = '';
+            screen.scrollTop = screen.scrollHeight;
+        }
+    });
+
+    function processCommand(command) {
+        const parts = command.split(' ');
+        const main = parts[0].toLowerCase();
+        const arg = parts[1];
+
+        switch(main) {
+            case 'help':
+                screen.innerHTML += `Available Commands:\n` +
+                    `  help         - Show this help menu\n` +
+                    `  status       - Display core server and node metrics\n` +
+                    `  scan         - Run target network enumeration (Usage: scan <IP>)\n` +
+                    `  whoami       - Show current operator privilege level\n` +
+                    `  clear        - Clear terminal screen\n` +
+                    `  modules      - List active red team modules\n` +
+                    `  date         - Show system UTC timestamp\n\n`;
+                break;
+
+            case 'status':
+                screen.innerHTML += `[+] Core Status: ONLINE\n` +
+                    `[+] Node Location: Istanbul SEC-1\n` +
+                    `[+] Active Handshakes: 14\n` +
+                    `[+] Encryption: AES-256-GCM Active\n\n`;
+                break;
+
+            case 'whoami':
+                screen.innerHTML += `root (UID: 0 / GID: 0) - FULL SYSTEM PRIVILEGES\n\n`;
+                break;
+
+            case 'clear':
+                screen.innerHTML = '';
+                break;
+
+            case 'modules':
+                screen.innerHTML += `[1] Telemetry Tracker (tracker.html)\n` +
+                    `[2] Android Exploit Unit (android_shell.html)\n` +
+                    `[3] Network Intelligence (instagram.html)\n` +
+                    `[4] Hash Cracker Unit (hash_cracker.html)\n` +
+                    `[5] Port Scanner (port_scanner.html)\n` +
+                    `[6] Steg Injector (image_stego.html)\n\n`;
+                break;
+
+            case 'date':
+                screen.innerHTML += `${new Date().toUTCString()}\n\n`;
+                break;
+
+            case 'scan':
+                if (!arg) {
+                    screen.innerHTML += `[-] Error: Target argument missing. Usage: scan <IP>\n\n`;
+                } else {
+                    screen.innerHTML += `[!] Initializing SYN packet sweep on target: ${arg}...\n`;
+                    screen.innerHTML += `[+] Port 22 (SSH) - OPEN\n`;
+                    screen.innerHTML += `[+] Port 80 (HTTP) - OPEN\n`;
+                    screen.innerHTML += `[+] Port 443 (HTTPS) - OPEN\n`;
+                    screen.innerHTML += `[✔] Scan completed successfully. Target fingerprint verified.\n\n`;
+                }
+                break;
+
+            default:
+                screen.innerHTML += `zsh: command not found: ${command}. Type 'help' for available commands.\n\n`;
+                break;
+        }
+        screen.innerHTML += 'root@anom-node-01:~# ';
+    }
+</script>
+
+</body>
+</html>
