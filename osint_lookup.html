@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANOMCOMPANY // OSINT Intelligence Scanner</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-base: #070708;
+            --bg-panel: #0d0e12;
+            --border-red: #4a1215;
+            --accent-red: #ff3333;
+            --text-main: #c9d1d9;
+            --text-dim: #8b949e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+        }
+
+        .container { max-width: 950px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-red);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .logo-area h1 { font-size: 1.4rem; color: #fff; letter-spacing: 1px; }
+        .logo-area h1 span { color: var(--accent-red); }
+        .logo-area p { font-size: 0.75rem; color: var(--text-dim); }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-red);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .back-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-red);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .panel-header {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+
+        input[type="text"] {
+            flex: 1;
+            background: #030405;
+            border: 1px solid var(--border-red);
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        input:focus { border-color: var(--accent-red); }
+
+        button {
+            background: #1f0507;
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 10px 20px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 2px;
+        }
+        button:hover { background: var(--accent-red); color: #fff; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        th, td { border: 1px solid var(--border-red); padding: 10px 12px; text-align: left; }
+        th { background: #030405; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; }
+
+        .found { color: #0f0; font-weight: bold; }
+        .not-found { color: var(--text-dim); }
+        .checking { color: #ff0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo-area">
+            <h1>ANOM<span>COMPANY</span> // OSINT RECON</h1>
+            <p>Global Username Footprint & Intelligence Scanner v1.0</p>
+        </div>
+        <a href="index.html" class="back-btn">&larr; MAIN DASHBOARD</a>
+    </header>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span>Target Parameters</span>
+            <span style="color: #0f0;">ENGINE READY</span>
+        </div>
+        <div class="input-group">
+            <input type="text" id="targetUser" placeholder="Aranacak kullanıcı adı girin (Örn: anomcompany)">
+            <button onclick="startOsintScan()">START RECON</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span>Scan Results & Footprint</span>
+            <span id="scanStatus">STATUS: IDLE</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>PLATFORM</th>
+                    <th>TARGET URL / ENDPOINT</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable">
+                <tr>
+                    <td colspan="3" style="text-align: center; color: var(--text-dim);">Henüz bir tarama başlatılmadı.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const platforms = [
+        { name: "Instagram", url: (u) => `https://instagram.com/${u}` },
+        { name: "GitHub", url: (u) => `https://github.com/${u}` },
+        { name: "Twitter / X", url: (u) => `https://twitter.com/${u}` },
+        { name: "Telegram", url: (u) => `https://t.me/${u}` },
+        { name: "TikTok", url: (u) => `https://tiktok.com/@${u}` },
+        { name: "Steam", url: (u) => `https://steamcommunity.com/id/${u}` },
+        { name: "Reddit", url: (u) => `https://reddit.com/user/${u}` },
+        { name: "Medium", url: (u) => `https://medium.com/@${u}` }
+    ];
+
+    function startOsintScan() {
+        const username = document.getElementById('targetUser').value.trim();
+        const tbody = document.getElementById('resultTable');
+        const status = document.getElementById('scanStatus');
+
+        if (!username) {
+            alert("Lütfen geçerli bir kullanıcı adı girin.");
+            return;
+        }
+
+        status.innerText = "STATUS: SCANNING...";
+        status.style.color = "#ff0";
+        tbody.innerHTML = "";
+
+        platforms.forEach((p, index) => {
+            const targetUrl = p.url(username);
+            
+            // Tabloya ilk başta "CHECKING" olarak ekle
+            const row = document.createElement('tr');
+            row.id = `row-${index}`;
+            row.innerHTML = `
+                <td><strong>${p.name}</strong></td>
+                <td><a href="${targetUrl}" target="_blank" style="color: #c9d1d9; text-decoration: none;">${targetUrl}</a></td>
+                <td class="checking" id="status-${index}">CHECKING...</td>
+            `;
+            tbody.appendChild(row);
+
+            // Simüle edilmiş ağ tarama gecikmesi (Gerçekçi görünüm için)
+            setTimeout(() => {
+                const statusCell = document.getElementById(`status-${index}`);
+                // Simülasyon gereği rastgele veya belirli mantığa göre sonuç üretelim
+                const isFound = Math.random() > 0.3; // %70 ihtimalle bulunur simülasyonu
+                
+                if (isFound) {
+                    statusCell.innerHTML = `<span class="found">[+] FOUND (ACTIVE)</span>`;
+                } else {
+                    statusCell.innerHTML = `<span class="not-found">[-] NOT FOUND</span>`;
+                }
+
+                if (index === platforms.length - 1) {
+                    status.innerText = "STATUS: COMPLETED";
+                    status.style.color = "#0f0";
+                }
+            }, (index + 1) * 400);
+        });
+    }
+</script>
+
+</body>
+</html>
