@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANOMCOMPANY // Instagram Recon Tool</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0b0b0b;
+            color: #cc0000;
+            font-family: 'Share Tech Mono', monospace;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-left: 4px solid #cc0000;
+            padding-left: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: #e60000;
+        }
+
+        p.sub {
+            font-size: 0.8rem;
+            color: #777;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            background: #110000;
+            border: 1px solid #660000;
+            color: #cc0000;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            font-family: 'Share Tech Mono', monospace;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #cc0000;
+            color: #000;
+        }
+
+        .panel {
+            border: 1px solid #550000;
+            background: #050505;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 10px rgba(100, 0, 0, 0.1);
+        }
+
+        .panel-title {
+            font-size: 0.75rem;
+            color: #880000;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #330000;
+            padding-bottom: 4px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #111;
+            border: 1px solid #660000;
+            color: #ff3333;
+            padding: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+        }
+
+        button {
+            background: #1a0000;
+            border: 1px solid #990000;
+            color: #ff3333;
+            padding: 8px 15px;
+            font-family: 'Share Tech Mono', monospace;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #cc0000;
+            color: #000;
+        }
+
+        .terminal {
+            background: #020202;
+            border: 1px solid #440000;
+            padding: 10px;
+            height: 180px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #ff4d4d;
+        }
+
+        .pulse-box {
+            height: 80px;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid #440000;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .status-bar {
+            background: #990000;
+            color: #fff;
+            text-align: center;
+            font-size: 0.75rem;
+            padding: 5px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>ANOMCOMPANY</h1>
+            <p class="sub">Security & Tool Development Laboratory</p>
+        </div>
+        <a href="index.html" class="back-btn">[ &lt; MAIN ]</a>
+    </header>
+
+    <!-- Konsol Kontrol Paneli -->
+    <div class="panel">
+        <div class="panel-title">[ operator@anom ] : ~# instagram_recon.py</div>
+        <div class="input-group">
+            <input type="text" id="targetInput" placeholder="hedef_kullaniciadi">
+            <button onclick="startRecon()">EXECUTE</button>
+        </div>
+        <div class="terminal" id="terminalOutput">
+            [+] System ready. Waiting for input stream...<br>
+            [+] Protocol: Instagram OSINT / Target Analysis Module v2.4
+        </div>
+    </div>
+
+    <!-- Canlı Dalga / Pulse Grafiği -->
+    <div class="panel">
+        <div class="panel-title">LIVE_DATA_STREAM // MULTI_PULSE_FEED</div>
+        <div class="pulse-box">
+            <svg preserveAspectRatio="none" viewBox="0 0 500 100">
+                <path d="M0,50 Q125,10 250,50 T500,50" fill="none" stroke="#ff0000" stroke-width="2">
+                    <animate attributeName="d" 
+                             values="M0,50 Q125,10 250,50 T500,50; M0,50 Q125,90 250,30 T500,50; M0,50 Q125,10 250,50 T500,50" 
+                             dur="3s" repeatCount="indefinite"/>
+                </path>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<div class="status-bar">
+    >>> SİSTEM DURUMU: AKTİF // SECURE TUNNEL ONLINE
+</div>
+
+<script>
+    function startRecon() {
+        const target = document.getElementById('targetInput').value.trim();
+        const terminal = document.getElementById('terminalOutput');
+        
+        if (!target) {
+            terminal.innerHTML += "<br><span style='color:yellow;'>[!] Lütfen hedef kullanıcı adı girin.</span>";
+            return;
+        }
+
+        terminal.innerHTML = `[!] Target acquired: ${target}<br>`;
+        let steps = [
+            `> Mounting core systems... [OK]`,
+            `> Bypassing API rate limits... [OK]`,
+            `> Initializing request headers for @${target}...`,
+            `> Fetching Web Profile Info... [SUCCESS]`,
+            `> Target ID Resolved. Extracting node graph...`,
+            `> [+] Takipçi listesi taraması tamamlandı. Veriler şifrelendi.`
+        ];
+
+        let i = 0;
+        function nextStep() {
+            if (i < steps.length) {
+                terminal.innerHTML += `<br>${steps[i]}`;
+                terminal.scrollTop = terminal.scrollHeight;
+                i++;
+                setTimeout(nextStep, 600);
+            }
+        }
+        nextStep();
+    }
+</script>
+
+</body>
+</html>
